@@ -51,6 +51,8 @@ public class Bootstrap {
                     "TRUNCATE `account`;",
                     "DROP TABLE `account`;",
                     "TRUNCATE `client`;",
+                    "TRUNCATE `activity`;",
+                    "DROP TABLE `activity`;",
                     "TRUNCATE `user`;",
                     "DROP TABLE  `client`, `right`, `role`, `user`;"
             };

@@ -12,5 +12,9 @@ public interface UserRepository {
 
     boolean save(User user);
 
+    boolean update(User user);
+
+    boolean removeUser(Long userId);
+
     void removeAll();
 }

@@ -11,6 +11,7 @@ import repository.account.AccountRepository;
 import repository.account.AccountRepositoryMySQL;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,15 +40,27 @@ public class ClientRepositoryMySQLTest {
 
     @Test
     public void findAllWhenDbNotEmpty() throws Exception {
-        Client client = new ClientBuilder()
+        Client client1 = new ClientBuilder()
                 .setName("Client")
                 .setPnc("123")
                 .setCardNb("cardNb")
                 .setAddress("address")
                 .build();
-        clientRepository.save(client);
-        clientRepository.save(client);
-        clientRepository.save(client);
+        Client client2 = new ClientBuilder()
+                .setName("Client")
+                .setPnc("234")
+                .setCardNb("cardNb")
+                .setAddress("address")
+                .build();
+        Client client3 = new ClientBuilder()
+                .setName("Client")
+                .setPnc("345")
+                .setCardNb("cardNb")
+                .setAddress("address")
+                .build();
+        clientRepository.save(client1);
+        clientRepository.save(client2);
+        clientRepository.save(client3);
 
         List<Client> clients = clientRepository.findAll();
         assertEquals(3, clients.size());
@@ -55,16 +68,25 @@ public class ClientRepositoryMySQLTest {
 
     @Test
     public void findByPNC() {
-        Client client = new ClientBuilder()
+        Client client1 = new ClientBuilder()
                 .setName("PncTest")
                 .setPnc("456")
                 .setCardNb("cardNb")
                 .setAddress("address")
+                .setAccounts(new ArrayList<>())
                 .build();
-        clientRepository.save(client);
-        Client result = clientRepository.findByPNC("456").getResult();
+        Client client2 = new ClientBuilder()
+                .setName("Client")
+                .setPnc("123")
+                .setCardNb("cardNb")
+                .setAddress("address")
+                .setAccounts(new ArrayList<>())
+                .build();
+        clientRepository.save(client1);
+        clientRepository.save(client2);
+        Client result = clientRepository.findById(client1.getId()).getResult();
 
-        assertEquals(client, result);
+        assertEquals(client1, result);
 
 
     }

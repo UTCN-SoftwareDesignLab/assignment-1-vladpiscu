@@ -8,7 +8,7 @@ import java.util.List;
 public interface ClientRepository {
     List<Client> findAll();
 
-    Notification<Client> findByPNC(String pnc);
+    Notification<Client> findById(Long clientId);
 
     boolean save(Client client);
 

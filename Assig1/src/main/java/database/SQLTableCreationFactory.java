@@ -98,6 +98,21 @@ public class SQLTableCreationFactory {
                         "    ON DELETE CASCADE" +
                         "    ON UPDATE CASCADE);";
 
+            case ACTIVITY:
+                return "\tCREATE TABLE IF NOT EXISTS activity (" +
+                        "  id INT NOT NULL AUTO_INCREMENT," +
+                        "  user_id INT NOT NULL," +
+                        "  operation VARCHAR(200) NOT NULL," +
+                        "  timestamp datetime NOT NULL," +
+                        "  PRIMARY KEY (`id`)," +
+                        "  UNIQUE INDEX `id_UNIQUE` (`id` ASC)," +
+                        "  INDEX `user_id_idx` (`user_id` ASC)," +
+                        "  CONSTRAINT user_activity_fkid" +
+                        "    FOREIGN KEY (user_id)" +
+                        "    REFERENCES user (id)" +
+                        "    ON DELETE CASCADE" +
+                        "    ON UPDATE CASCADE);";
+
             default:
                 return "";
 

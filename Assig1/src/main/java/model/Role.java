@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Role {
     private Long id;
@@ -35,5 +36,21 @@ public class Role {
 
     public void setRights(List<Right> rights) {
         this.rights = rights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role1 = (Role) o;
+        return Objects.equals(id, role1.id) &&
+                Objects.equals(role, role1.role) &&
+                Objects.equals(rights, role1.rights);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, role, rights);
     }
 }

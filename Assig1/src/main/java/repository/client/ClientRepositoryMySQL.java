@@ -1,19 +1,15 @@
 package repository.client;
 
 import model.Client;
-import model.User;
 import model.builder.ClientBuilder;
-import model.builder.UserBuilder;
 import model.validation.Notification;
 import repository.account.AccountRepository;
-import repository.user.AuthenticationException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Tables.CLIENT;
-import static database.Constants.Tables.USER;
 
 public class ClientRepositoryMySQL implements ClientRepository {
     private final Connection connection;
@@ -45,21 +41,14 @@ public class ClientRepositoryMySQL implements ClientRepository {
     }
 
     @Override
-    public Notification<Client> findByPNC(String pnc) {
+    public Notification<Client> findById(Long clientId) {
         Notification<Client> findByPNCNotification = new Notification<>();
         try {
             Statement statement = connection.createStatement();
-            String fetchUserSql = "Select * from `" + CLIENT + "` where `pnc`=\'" + pnc + "\'";
+            String fetchUserSql = "Select * from `" + CLIENT + "` where `id`=\'" + clientId + "\'";
             ResultSet clientResultSet = statement.executeQuery(fetchUserSql);
             if (clientResultSet.next()) {
-                Client client = new ClientBuilder()
-                        .setId(clientResultSet.getLong("id"))
-                        .setName(clientResultSet.getString("name"))
-                        .setPnc(clientResultSet.getString("pnc"))
-                        .setCardNb(clientResultSet.getString("cardNb"))
-                        .setAddress(clientResultSet.getString("address"))
-                        .setAccounts(accountRepository.findAccountsForClient(clientResultSet.getLong("id")))
-                        .build();
+                Client client = getClientFromResultSet(clientResultSet);
                 findByPNCNotification.setResult(client);
                 return findByPNCNotification;
             } else {
@@ -98,14 +87,14 @@ public class ClientRepositoryMySQL implements ClientRepository {
     @Override
     public boolean update(Client client) {
         try {
-            PreparedStatement insertClientStatement = connection
+            PreparedStatement updateClientStatement = connection
                     .prepareStatement("UPDATE client SET client.name=?, cardNb=?, pnc=?, address=? WHERE id=?");
-            insertClientStatement.setString(1, client.getName());
-            insertClientStatement.setString(2, client.getCardNb());
-            insertClientStatement.setString(3, client.getPnc());
-            insertClientStatement.setString(4, client.getAddress());
-            insertClientStatement.setLong(5, client.getId());
-            insertClientStatement.executeUpdate();
+            updateClientStatement.setString(1, client.getName());
+            updateClientStatement.setString(2, client.getCardNb());
+            updateClientStatement.setString(3, client.getPnc());
+            updateClientStatement.setString(4, client.getAddress());
+            updateClientStatement.setLong(5, client.getId());
+            updateClientStatement.executeUpdate();
 
             return true;
         } catch (SQLException e) {
@@ -131,8 +120,9 @@ public class ClientRepositoryMySQL implements ClientRepository {
                 .setId(rs.getLong("id"))
                 .setName(rs.getString("name"))
                 .setPnc(rs.getString("pnc"))
-                .setAddress(rs.getString("address"))
                 .setCardNb(rs.getString("cardNb"))
+                .setAddress(rs.getString("address"))
+                .setAccounts(accountRepository.findAccountsForClient(rs.getLong("id")))
                 .build();
     }
 }
