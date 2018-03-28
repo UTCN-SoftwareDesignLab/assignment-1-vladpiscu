@@ -8,6 +8,7 @@ import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
 
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import static database.Constants.Rights.RIGHTS;
 import static database.Constants.Roles.ADMINISTRATOR;
+import static database.Constants.Roles.EMPLOYEE;
 import static database.Constants.Roles.ROLES;
 import static database.Constants.Schemas.SCHEMAS;
 import static database.Constants.getRolesRights;
@@ -134,12 +136,38 @@ public class Bootstrap {
     private static void bootstrapUserRoles() throws SQLException {
         ArrayList<Role> roles = new ArrayList<Role>();
         roles.add(rightsRolesRepository.findRoleByTitle(ADMINISTRATOR));
-        User user = new UserBuilder()
+        User userAdmin = new UserBuilder()
                 .setUsername("a")
-                .setPassword("a")
+                .setPassword(encodePassword("a"))
                 .setRoles(roles)
                 .build();
-        userRepository.save(user);
+        userRepository.save(userAdmin);
+        roles.clear();
+        roles.add(rightsRolesRepository.findRoleByTitle(EMPLOYEE));
+        User user = new UserBuilder()
+                .setUsername("b")
+                .setPassword(encodePassword("b"))
+                .setRoles(roles)
+                .build();
 
+        userRepository.save(user);
+    }
+
+    private static String encodePassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
