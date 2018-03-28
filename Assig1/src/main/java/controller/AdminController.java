@@ -1,45 +1,65 @@
 package controller;
 
+import database.Constants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import service.user.AuthenticationService;
-import sun.awt.ComponentFactory;
+import model.User;
+import repository.user.UserRepository;
+import repository.user.UserRepositoryMySQL;
 
-import javax.swing.*;
 import java.io.IOException;
 
-import static database.Constants.Roles.ADMINISTRATOR;
-
-public class UserController {
+public class AdminController {
     @FXML
     private Button logoutButton;
     @FXML
-    private Button updateClientButton;
+    private Button updateUserButton;
     @FXML
-    private Button addClientButton;
+    private Button deleteUserButton;
     @FXML
-    private Button accountsButton;
+    private Button addUserButton;
     @FXML
-    private Button utilityBillsButton;
+    private Button reportButton;
     @FXML
-    private Button transferMoneyButton;
+    private TextField userIdText;
     @FXML
-    private TextField clientIdText;
+    private TextField usernameText;
     @FXML
-    private TextField clientNameText;
+    private TextField passwordText;
     @FXML
-    private TextField cardNbText;
+    private ComboBox roleComboBox;
     @FXML
-    private TextField pncText;
-    @FXML
-    private TextField addressText;
+    private ComboBox<User> userComboBox;
 
-    public UserController(){
+
+    public AdminController(){
+    }
+
+    @FXML
+    private void addUserHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void userSelectionHandler(){
+        userIdText.setText(String.valueOf(userComboBox.getValue().getId()));
+        usernameText.setText(userComboBox.getValue().getUsername());
+        roleComboBox.setValue(userComboBox.getValue().getRoles().get(0));
+    }
+
+    public void populateUserBox(){
+    }
+
+    public void populateRoleComboBox(){
+        roleComboBox.getItems().addAll(Constants.Roles.ROLES);
     }
 
     @FXML

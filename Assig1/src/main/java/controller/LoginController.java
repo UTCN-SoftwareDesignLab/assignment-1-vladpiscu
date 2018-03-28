@@ -17,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
+import static database.Constants.Roles.EMPLOYEE;
+
 public class LoginController {
     private AuthenticationService authenticationService;
     @FXML
@@ -34,7 +36,7 @@ public class LoginController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
-        Notification<String> loginNotification = null;
+        Notification<User> loginNotification = null;
         try {
             loginNotification = authenticationService.login(username, password);
         } catch (AuthenticationException e1) {
@@ -53,21 +55,35 @@ public class LoginController {
                 alert.setTitle("Information Dialog");
                 alert.setHeaderText("Login successful");
                 alert.showAndWait();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserView.fxml"));
-                UserController userController = new UserController();
-                loader.setController(userController);
-                Stage stage = (Stage) loginButton.getScene().getWindow();
+                String role = loginNotification.getResult().getRoles().get(0).getRole();
+                FXMLLoader loader;
                 Parent sceneMain = null;
-                try {
-                    sceneMain = loader.load();
-                    userController.setPageForRole(loginNotification.getResult());
-                    Scene scene = new Scene(sceneMain);
-                    stage.setScene(scene);
-                    stage.setTitle("User screen");
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(role.compareTo(EMPLOYEE)==0) {
+                    loader = new FXMLLoader(getClass().getResource("/UserView.fxml"));
+                    UserController userController = new UserController();
+                    loader.setController(userController);
+                    try {
+                        sceneMain = loader.load();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                else{
+                    loader = new FXMLLoader(getClass().getResource("/AdminView.fxml"));
+                    AdminController adminController = new AdminController();
+                    loader.setController(adminController);
+                    try {
+                        sceneMain = loader.load();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    adminController.populateUserBox();
+                    adminController.populateRoleComboBox();
+                }
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                Scene scene = new Scene(sceneMain);stage.setScene(scene);
+                stage.setTitle("User screen");
+                stage.show();
 
             }
         }

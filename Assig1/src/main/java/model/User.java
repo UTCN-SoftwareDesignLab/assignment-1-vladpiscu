@@ -58,4 +58,13 @@ public class User {
 
         return Objects.hash(id, username, password, roles);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", roles=" + roles.toString() +
+                '}';
+    }
 }

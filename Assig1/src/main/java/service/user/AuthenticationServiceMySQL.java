@@ -48,14 +48,8 @@ public class AuthenticationServiceMySQL implements AuthenticationService{
     }
 
     @Override
-    public Notification<String> login(String username, String password) throws AuthenticationException {
-        Notification<User> userNotification = userRepository.findByUsernameAndPassword(username, encodePassword(password));
-        Notification<String> roleNotification = new Notification<>();
-        if(userNotification.hasErrors())
-            roleNotification.addError(userNotification.getFormattedErrors());
-        else
-            roleNotification.setResult(userNotification.getResult().getRoles().get(0).getRole());
-        return roleNotification;
+    public Notification<User> login(String username, String password) throws AuthenticationException {
+        return userRepository.findByUsernameAndPassword(username, encodePassword(password));
     }
 
     @Override

@@ -53,4 +53,11 @@ public class Role {
 
         return Objects.hash(id, role, rights);
     }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "role='" + role + '\'' +
+                '}';
+    }
 }
