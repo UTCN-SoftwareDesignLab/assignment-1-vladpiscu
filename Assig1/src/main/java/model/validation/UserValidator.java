@@ -24,6 +24,8 @@ public class UserValidator {
         errors = new ArrayList<>();
     }
 
+
+
     public boolean validate() {
         validateUsername(user.getUsername());
         validatePassword(user.getPassword());

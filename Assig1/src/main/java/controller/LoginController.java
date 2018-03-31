@@ -52,7 +52,7 @@ public class LoginController {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning");
                 alert.setHeaderText("Login unsuccessful");
-                alert.setContentText("Wrong username or password!");
+                alert.setContentText(loginNotification.getFormattedErrors());
                 alert.showAndWait();
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -65,8 +65,14 @@ public class LoginController {
                 FXMLLoader currentLoader;
                 if(role.compareTo(EMPLOYEE)==0)
                     currentLoader = userLoader;
-                else
+                else {
                     currentLoader = adminLoader;
+                    AdminController adminController = currentLoader.getController();
+                    adminController.populateUserBox();
+                    adminController.populateRoleComboBox();
+                }
+                usernameTextField.clear();
+                passwordTextField.clear();
                 Scene scene = loginButton.getScene();
                 scene.setRoot(currentLoader.getRoot());
 

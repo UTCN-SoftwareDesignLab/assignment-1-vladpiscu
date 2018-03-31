@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -13,9 +14,9 @@
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="addUserButton" mnemonicParsing="false" onAction="#addUserHandler" prefHeight="30.0" prefWidth="90.0" text="Add user" />
-            <Button fx:id="updateUserButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Update user" />
-            <Button fx:id="deleteUserButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Delete user" />
-            <Button fx:id="reportButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" text="Report" />
+            <Button fx:id="updateUserButton" mnemonicParsing="false" onAction="#updateUserHandler" prefHeight="30.0" prefWidth="90.0" text="Update user" />
+            <Button fx:id="deleteUserButton" mnemonicParsing="false" onAction="#deleteUserHandler" prefHeight="30.0" prefWidth="90.0" text="Delete user" />
+            <Button fx:id="reportButton" mnemonicParsing="false" onAction="#reportHandler" prefHeight="30.0" prefWidth="90.0" text="Report" />
          </children>
          <BorderPane.margin>
             <Insets right="5.0" />
@@ -30,12 +31,12 @@
          <children>
             <VBox alignment="CENTER" prefHeight="154.0" prefWidth="475.0" spacing="50.0">
                <children>
-                  <ComboBox fx:id="userComboBox" onAction="#userSelectionHandler" prefHeight="25.0" prefWidth="399.0" />
+                  <ComboBox fx:id="userComboBox" onAction="#userSelectionHandler" prefHeight="25.0" prefWidth="399.0" promptText="Users" />
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <TextField fx:id="userIdText" promptText="Id" />
+                        <TextField fx:id="userIdText" disable="true" promptText="Id" />
                         <TextField fx:id="usernameText" promptText="Username" />
-                        <TextField fx:id="passwordText" promptText="Password" />
+                        <PasswordField fx:id="passwordText" promptText="Password" />
                         <ComboBox fx:id="roleComboBox" prefWidth="150.0" promptText="Role" />
                      </children>
                   </HBox>

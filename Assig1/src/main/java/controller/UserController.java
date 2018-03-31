@@ -7,11 +7,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Client;
+import model.User;
 import service.user.AuthenticationService;
+import service.user.UserService;
 import sun.awt.ComponentFactory;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
 
 import static database.Constants.Roles.ADMINISTRATOR;
 
@@ -38,11 +42,43 @@ public class UserController {
     private TextField pncText;
     @FXML
     private TextField addressText;
+    @FXML
+    private ComboBox<Client> clientComboBox;
 
     private FXMLLoader loginLoader;
 
     public UserController(FXMLLoader loginLoader){
         this.loginLoader = loginLoader;
+    }
+
+    @FXML
+    private void clientSelectionHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void addClientHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void updateClientHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void accountsHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void utilityBillsHandler(ActionEvent e){
+
+    }
+
+    @FXML
+    private void transferMoneyHandler(ActionEvent e){
+
     }
 
     @FXML

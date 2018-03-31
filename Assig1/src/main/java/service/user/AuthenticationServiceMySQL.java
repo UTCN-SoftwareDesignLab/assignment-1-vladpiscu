@@ -8,8 +8,8 @@ import model.validation.UserValidator;
 import repository.security.RightsRolesRepository;
 import repository.user.AuthenticationException;
 import repository.user.UserRepository;
+import service.security.PasswordEncoder;
 
-import java.security.MessageDigest;
 import java.util.Collections;
 
 import static database.Constants.Roles.ADMINISTRATOR;
@@ -17,61 +17,21 @@ import static database.Constants.Roles.ADMINISTRATOR;
 public class AuthenticationServiceMySQL implements AuthenticationService{
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
+    private final PasswordEncoder encoder;
 
-    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
+    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.rightsRolesRepository = rightsRolesRepository;
-    }
-
-    @Override
-    public Notification<Boolean> register(String username, String password) {
-        Role customerRole = rightsRolesRepository.findRoleByTitle(ADMINISTRATOR);
-        User user = new UserBuilder()
-                .setUsername(username)
-                .setPassword(password)
-                .setRoles(Collections.singletonList(customerRole))
-                .build();
-
-        UserValidator userValidator = new UserValidator(user);
-        boolean userValid = userValidator.validate();
-        Notification<Boolean> userRegisterNotification = new Notification<>();
-
-        if (!userValid) {
-            userValidator.getErrors().forEach(userRegisterNotification::addError);
-            userRegisterNotification.setResult(Boolean.FALSE);
-            return userRegisterNotification;
-        } else {
-            user.setPassword(encodePassword(password));
-            userRegisterNotification.setResult(userRepository.save(user));
-            return userRegisterNotification;
-        }
+        this.encoder = encoder;
     }
 
     @Override
     public Notification<User> login(String username, String password) throws AuthenticationException {
-        return userRepository.findByUsernameAndPassword(username, encodePassword(password));
+        return userRepository.findByUsernameAndPassword(username, encoder.encodeString(password));
     }
 
     @Override
     public boolean logout(User user) {
         return false;
-    }
-
-    private String encodePassword(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }

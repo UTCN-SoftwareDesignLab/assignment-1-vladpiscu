@@ -7,6 +7,7 @@ import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
+import service.security.PasswordEncoder;
 
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -27,6 +28,7 @@ import static database.Constants.getRolesRights;
 public class Bootstrap {
     private static RightsRolesRepository rightsRolesRepository;
     private static UserRepository userRepository;
+    private static PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) throws SQLException {
         dropAll();
@@ -99,6 +101,7 @@ public class Bootstrap {
             JDBConnectionWrapper connectionWrapper = new JDBConnectionWrapper(schema);
             rightsRolesRepository = new RightsRolesRepositoryMySQL(connectionWrapper.getConnection());
             userRepository = new UserRepositoryMySQL(connectionWrapper.getConnection(), rightsRolesRepository);
+            passwordEncoder = new PasswordEncoder();
 
             bootstrapRoles();
             bootstrapRights();
@@ -138,7 +141,7 @@ public class Bootstrap {
         roles.add(rightsRolesRepository.findRoleByTitle(ADMINISTRATOR));
         User userAdmin = new UserBuilder()
                 .setUsername("a")
-                .setPassword(encodePassword("a"))
+                .setPassword(passwordEncoder.encodeString("a"))
                 .setRoles(roles)
                 .build();
         userRepository.save(userAdmin);
@@ -146,28 +149,10 @@ public class Bootstrap {
         roles.add(rightsRolesRepository.findRoleByTitle(EMPLOYEE));
         User user = new UserBuilder()
                 .setUsername("b")
-                .setPassword(encodePassword("b"))
+                .setPassword(passwordEncoder.encodeString("b"))
                 .setRoles(roles)
                 .build();
 
         userRepository.save(user);
-    }
-
-    private static String encodePassword(String password) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }

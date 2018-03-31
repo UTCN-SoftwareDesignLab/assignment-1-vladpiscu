@@ -2,23 +2,21 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <right>
       <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="addClientButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="Add client" />
-            <Button fx:id="updateClientButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="Update client" />
-            <Button fx:id="accountsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="Accounts" />
-            <Button fx:id="utilityBillsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="Utility bills" />
-            <Button fx:id="transferMoneyButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="Transfer money" />
+            <Button fx:id="addClientButton" mnemonicParsing="false" onAction="#addClientHandler" prefHeight="30.0" prefWidth="99.0" text="Add client" />
+            <Button fx:id="updateClientButton" mnemonicParsing="false" onAction="#updateClientHandler" prefHeight="30.0" prefWidth="99.0" text="Update client" />
+            <Button fx:id="accountsButton" mnemonicParsing="false" onAction="#accountsHandler" prefHeight="30.0" prefWidth="99.0" text="Accounts" />
+            <Button fx:id="utilityBillsButton" mnemonicParsing="false" onAction="#utilityBillsHandler" prefHeight="30.0" prefWidth="99.0" text="Utility bills" />
+            <Button fx:id="transferMoneyButton" mnemonicParsing="false" onAction="#transferMoneyHandler" prefHeight="30.0" prefWidth="99.0" text="Transfer money" />
          </children>
          <BorderPane.margin>
             <Insets left="5.0" right="5.0" />
@@ -28,6 +26,14 @@
    <bottom>
       <VBox alignment="CENTER" prefHeight="89.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutHandler" prefHeight="25.0" prefWidth="90.0" text="Logout" />
+         </children>
+      </VBox>
+   </bottom>
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="50.0" BorderPane.alignment="CENTER">
+         <children>
+            <ComboBox fx:id="clientComboBox" onAction="#clientSelectionHandler" prefHeight="25.0" prefWidth="482.0" />
             <HBox prefHeight="42.0" prefWidth="600.0" spacing="10.0">
                <children>
                   <TextField fx:id="clientIdText" prefHeight="8.0" prefWidth="100.0" promptText="Id" />
@@ -40,16 +46,7 @@
                   <Insets left="5.0" right="5.0" />
                </padding>
             </HBox>
-            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logoutHandler" prefHeight="25.0" prefWidth="90.0" text="Logout" />
          </children>
       </VBox>
-   </bottom>
-   <center>
-      <TableView fx:id="clientTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
    </center>
 </BorderPane>
