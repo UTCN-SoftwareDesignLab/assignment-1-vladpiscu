@@ -150,7 +150,7 @@ public class UserController {
 
     @FXML
     private void accountsHandler(ActionEvent e){
-        
+
     }
 
     @FXML
