@@ -77,4 +77,13 @@ public class Client {
     public int hashCode() {
         return Objects.hash(id, name, cardNb, pnc, address, accounts);
     }
+
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                ", name='" + name + '\'' +
+                ", cardNb='" + cardNb + '\'' +
+                ", pnc='" + pnc + '\'' +
+                ", address='" + address;
+    }
 }

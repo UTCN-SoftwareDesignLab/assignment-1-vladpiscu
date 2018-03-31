@@ -26,7 +26,7 @@ public class ViewFactory {
         LoginController loginController = new LoginController(componentFactory.getAuthenticationService(), adminLoader, userLoader);
         loginLoader.setController(loginController);
         loginLoader.load();
-        UserController userController = new UserController(loginLoader);
+        UserController userController = new UserController(loginLoader, componentFactory.getClientService());
         AdminController adminController = new AdminController(loginLoader, componentFactory.getUserService(), componentFactory.getRightsRolesService());
         userLoader.setController(userController);
         adminLoader.setController(adminController);

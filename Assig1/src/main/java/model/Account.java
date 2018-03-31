@@ -57,4 +57,12 @@ public class Account {
 
         return Objects.hash(id, type, amount, creationDate);
     }
+
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                ", type='" + type + '\'' +
+                ", amount=" + amount +
+                ", creationDate=" + creationDate;
+    }
 }

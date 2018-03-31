@@ -36,7 +36,7 @@
             <ComboBox fx:id="clientComboBox" onAction="#clientSelectionHandler" prefHeight="25.0" prefWidth="482.0" />
             <HBox prefHeight="42.0" prefWidth="600.0" spacing="10.0">
                <children>
-                  <TextField fx:id="clientIdText" prefHeight="8.0" prefWidth="100.0" promptText="Id" />
+                  <TextField fx:id="clientIdText" disable="true" prefHeight="8.0" prefWidth="100.0" promptText="Id" />
                   <TextField fx:id="clientNameText" promptText="Name" />
                   <TextField fx:id="cardNbText" promptText="Card nb" />
                   <TextField fx:id="pncText" promptText="PNC" />

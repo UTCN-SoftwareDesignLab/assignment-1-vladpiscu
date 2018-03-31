@@ -63,8 +63,11 @@ public class LoginController {
 
                 Parent sceneMain = null;
                 FXMLLoader currentLoader;
-                if(role.compareTo(EMPLOYEE)==0)
+                if(role.compareTo(EMPLOYEE)==0) {
                     currentLoader = userLoader;
+                    UserController userController = currentLoader.getController();
+                    userController.populateClientBox();
+                }
                 else {
                     currentLoader = adminLoader;
                     AdminController adminController = currentLoader.getController();

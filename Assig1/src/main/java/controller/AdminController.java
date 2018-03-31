@@ -125,22 +125,29 @@ public class AdminController {
                 password = passwordText.getText();
                 updatePassword = true;
             }
-            Boolean isSuccessful = userService.update(Long.parseLong(userIdText.getText()),
-                    userComboBox.getValue().getUsername(), password, roles, updatePassword).getResult();
-            if(isSuccessful){
-                refreshView();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setHeaderText("User updated successfully");
-                refreshView();
-                alert.showAndWait();
-            }
-            else{
+            Notification<Boolean> updateNotification = userService.update(Long.parseLong(userIdText.getText()),
+                    userComboBox.getValue().getUsername(), password, roles, updatePassword);
+            if (updateNotification.hasErrors()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning");
                 alert.setHeaderText("Update unsuccessful");
-                alert.setContentText("User was not updated successful, please try again later.");
+                alert.setContentText(updateNotification.getFormattedErrors());
                 alert.showAndWait();
+            } else {
+                if (updateNotification.getResult()) {
+                    refreshView();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText("User updated successfully");
+                    refreshView();
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Warning");
+                    alert.setHeaderText("Update unsuccessful");
+                    alert.setContentText("User was not updated successful, please try again later.");
+                    alert.showAndWait();
+                }
             }
 
         }
