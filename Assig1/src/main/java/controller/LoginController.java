@@ -21,6 +21,8 @@ import static database.Constants.Roles.EMPLOYEE;
 
 public class LoginController {
     private AuthenticationService authenticationService;
+    private FXMLLoader adminLoader;
+    private FXMLLoader userLoader;
     @FXML
     private TextField usernameTextField;
     @FXML
@@ -28,11 +30,13 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
-    public LoginController(AuthenticationService authenticationService){
+    public LoginController(AuthenticationService authenticationService, FXMLLoader adminLoader, FXMLLoader userLoader){
         this.authenticationService = authenticationService;
+        this.adminLoader = adminLoader;
+        this.userLoader = userLoader;
     }
 
-    public void LoginHandler(){
+    public void loginHandler(){
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
 
@@ -56,34 +60,15 @@ public class LoginController {
                 alert.setHeaderText("Login successful");
                 alert.showAndWait();
                 String role = loginNotification.getResult().getRoles().get(0).getRole();
-                FXMLLoader loader;
+
                 Parent sceneMain = null;
-                if(role.compareTo(EMPLOYEE)==0) {
-                    loader = new FXMLLoader(getClass().getResource("/UserView.fxml"));
-                    UserController userController = new UserController();
-                    loader.setController(userController);
-                    try {
-                        sceneMain = loader.load();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else{
-                    loader = new FXMLLoader(getClass().getResource("/AdminView.fxml"));
-                    AdminController adminController = new AdminController();
-                    loader.setController(adminController);
-                    try {
-                        sceneMain = loader.load();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    adminController.populateUserBox();
-                    adminController.populateRoleComboBox();
-                }
-                Stage stage = (Stage) loginButton.getScene().getWindow();
-                Scene scene = new Scene(sceneMain);stage.setScene(scene);
-                stage.setTitle("User screen");
-                stage.show();
+                FXMLLoader currentLoader;
+                if(role.compareTo(EMPLOYEE)==0)
+                    currentLoader = userLoader;
+                else
+                    currentLoader = adminLoader;
+                Scene scene = loginButton.getScene();
+                scene.setRoot(currentLoader.getRoot());
 
             }
         }

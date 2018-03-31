@@ -1,6 +1,7 @@
 import controller.ComponentFactory;
 import controller.LoginController;
 import controller.UserController;
+import controller.ViewFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,12 +18,9 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException{
-        ComponentFactory componentFactory = ComponentFactory.instance();
-        UserController userController = new UserController();
-        LoginController loginController = new LoginController(componentFactory.getAuthenticationService());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
-        loader.setController(loginController);
-        Parent sceneMain = loader.load();
+        ViewFactory viewFactory = ViewFactory.instance();
+        FXMLLoader loginLoader = viewFactory.getLoginLoader();
+        Parent sceneMain = loginLoader.getRoot();
         Scene scene = new Scene(sceneMain);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Login screen");

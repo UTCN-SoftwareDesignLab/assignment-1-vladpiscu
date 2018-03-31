@@ -12,8 +12,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
-import repository.user.UserRepository;
-import repository.user.UserRepositoryMySQL;
 
 import java.io.IOException;
 
@@ -39,8 +37,11 @@ public class AdminController {
     @FXML
     private ComboBox<User> userComboBox;
 
+    private FXMLLoader loginLoader;
 
-    public AdminController(){
+
+    public AdminController(FXMLLoader loginLoader){
+        this.loginLoader = loginLoader;
     }
 
     @FXML
@@ -68,19 +69,8 @@ public class AdminController {
         alert.setTitle("Information Dialog");
         alert.setHeaderText("Logout successful");
         alert.showAndWait();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LoginView.fxml"));
-        LoginController loginController = new LoginController(controller.ComponentFactory.instance().getAuthenticationService());
-        loader.setController(loginController);
-        Stage stage = (Stage) logoutButton.getScene().getWindow();
-        Parent sceneMain = null;
-        try {
-            sceneMain = loader.load();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        Scene scene = new Scene(sceneMain);
-        stage.setScene(scene);
-        stage.setTitle("User screen");
-        stage.show();
+
+        Scene scene = logoutButton.getScene();
+        scene.setRoot(loginLoader.getRoot());
     }
 }
