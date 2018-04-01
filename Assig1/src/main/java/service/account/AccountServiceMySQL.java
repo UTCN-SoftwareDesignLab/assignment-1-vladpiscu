@@ -85,7 +85,7 @@ public class AccountServiceMySQL implements AccountService {
 
     @Override
     public Notification<Boolean> payBills(Long accountId, String type, int amountAccount, LocalDate date, int amount) {
-        Account account = buildAccount(accountId, type, amount, date);
+        Account account = buildAccount(accountId, type, amountAccount, date);
         account.setAmount(account.getAmount() - amount);
         AccountValidator accountValidator = new AccountValidator(account);
         boolean accountValid = accountValidator.validate();

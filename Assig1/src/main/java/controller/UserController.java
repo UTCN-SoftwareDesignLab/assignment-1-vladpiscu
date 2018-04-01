@@ -187,6 +187,7 @@ public class UserController {
         else {
             BillsController billsController = billsLoader.getController();
             billsController.setClientId(clientComboBox.getValue().getId());
+            billsController.populateSendingAccountBox();
             Scene scene = utilityBillsButton.getScene();
             scene.setRoot(billsLoader.getRoot());
         }
@@ -201,6 +202,8 @@ public class UserController {
         else {
             TransferController transferController = transferLoader.getController();
             transferController.setClientId(clientComboBox.getValue().getId());
+            transferController.populateClientsBox(clientComboBox.getItems());
+            transferController.populateSendingAccountBox();
             Scene scene = transferMoneyButton.getScene();
             scene.setRoot(transferLoader.getRoot());
         }

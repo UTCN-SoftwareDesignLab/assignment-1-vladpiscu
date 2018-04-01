@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <VBox prefHeight="93.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -45,13 +44,13 @@
          <children>
             <VBox alignment="CENTER" prefHeight="307.0" prefWidth="228.0">
                <children>
-                  <ComboBox fx:id="sendingAccount" prefHeight="25.0" prefWidth="198.0" promptText="Select sending account" />
+                  <ComboBox fx:id="sendingAccount" prefHeight="25.0" prefWidth="208.0" promptText="Select sending account" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="307.0" prefWidth="248.0" spacing="40.0">
                <children>
-                  <ComboBox fx:id="receivingClient" prefHeight="25.0" prefWidth="203.0" promptText="Select receiving client" />
-                  <ComboBox fx:id="receivingAccount" prefHeight="25.0" prefWidth="195.0" promptText="Select receiving account" />
+                  <ComboBox fx:id="receivingClient" onAction="#clientSelectionHandler" prefHeight="25.0" prefWidth="222.0" promptText="Select receiving client" />
+                  <ComboBox fx:id="receivingAccount" prefHeight="25.0" prefWidth="228.0" promptText="Select receiving account" />
                </children>
             </VBox>
          </children>
