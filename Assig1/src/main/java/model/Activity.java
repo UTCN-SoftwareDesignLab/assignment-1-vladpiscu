@@ -1,21 +1,40 @@
 package model;
 
-import org.joda.time.DateTime;
 
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Observable;
 
-public class Activity {
+public class Activity extends Observable{
     private Long id;
+    private Long userId;
     private String operation;
     private Date timeStamp;
 
+    public Activity(){
+
+    }
+
     public Activity(String operation, Date timeStamp) {
-        this.id = id;
         this.operation = operation;
         this.timeStamp = timeStamp;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    public Long getUserId() {
+
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -26,20 +45,11 @@ public class Activity {
         this.id = id;
     }
 
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(String operation) {
+    public void setOperationAndTimeStamp(String operation, Date timeStamp){
         this.operation = operation;
-    }
-
-    public Date getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
+        setChanged();
+        notifyObservers();
     }
 
     @Override

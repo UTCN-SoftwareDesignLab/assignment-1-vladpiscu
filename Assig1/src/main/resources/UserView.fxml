@@ -33,7 +33,7 @@
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="clientComboBox" onAction="#clientSelectionHandler" prefHeight="25.0" prefWidth="482.0" />
+            <ComboBox fx:id="clientComboBox" onAction="#clientSelectionHandler" prefHeight="25.0" prefWidth="482.0" promptText="Clients" />
             <HBox prefHeight="42.0" prefWidth="600.0" spacing="10.0">
                <children>
                   <TextField fx:id="clientIdText" disable="true" prefHeight="8.0" prefWidth="100.0" promptText="Id" />

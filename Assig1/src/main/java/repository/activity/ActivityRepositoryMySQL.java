@@ -34,11 +34,11 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
     }
 
     @Override
-    public boolean save(Long userId, Activity activity) {
+    public boolean save(Activity activity) {
         try {
             PreparedStatement insertActivityStatement = connection
                     .prepareStatement("INSERT INTO activity values (null, ?, ?, ?)");
-            insertActivityStatement.setLong(1, userId);
+            insertActivityStatement.setLong(1, activity.getUserId());
             insertActivityStatement.setString(2, activity.getOperation());
             insertActivityStatement.setDate(3, activity.getTimeStamp());
             insertActivityStatement.executeUpdate();

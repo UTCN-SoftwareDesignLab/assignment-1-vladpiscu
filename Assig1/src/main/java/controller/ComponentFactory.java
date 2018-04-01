@@ -3,6 +3,8 @@ package controller;
 import database.DBConnectionFactory;
 import repository.account.AccountRepository;
 import repository.account.AccountRepositoryMySQL;
+import repository.activity.ActivityRepository;
+import repository.activity.ActivityRepositoryMySQL;
 import repository.client.ClientRepository;
 import repository.client.ClientRepositoryMySQL;
 import repository.security.RightsRolesRepository;
@@ -11,6 +13,8 @@ import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
 import service.account.AccountService;
 import service.account.AccountServiceMySQL;
+import service.activity.ActivityService;
+import service.activity.ActivityServiceMySQL;
 import service.client.ClientService;
 import service.client.ClientServiceMySQL;
 import service.security.PasswordEncoder;
@@ -32,6 +36,7 @@ public class ComponentFactory {
     private final RightsRolesRepository rightsRolesRepository;
     private final ClientService clientService;
     private final AccountService accountService;
+    private final ActivityService activityService;
 
     private static ComponentFactory instance;
 
@@ -47,6 +52,7 @@ public class ComponentFactory {
         PasswordEncoder encoder = new PasswordEncoder();
         AccountRepository accountRepository = new AccountRepositoryMySQL(connection);
         ClientRepository clientRepository = new ClientRepositoryMySQL(connection, accountRepository);
+        ActivityRepository activityRepository = new ActivityRepositoryMySQL(connection);
         this.clientService = new ClientServiceMySQL(clientRepository);
         this.rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
@@ -54,6 +60,11 @@ public class ComponentFactory {
         this.userService = new UserServiceMySQL(userRepository, encoder);
         this.rightsRolesService = new RightRolesServiceMySQL(rightsRolesRepository);
         this.accountService = new AccountServiceMySQL(accountRepository);
+        this.activityService = new ActivityServiceMySQL(activityRepository);
+    }
+
+    public ActivityService getActivityService() {
+        return activityService;
     }
 
     public AccountService getAccountService() {

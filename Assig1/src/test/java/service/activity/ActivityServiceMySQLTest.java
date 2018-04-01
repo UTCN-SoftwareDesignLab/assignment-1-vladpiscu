@@ -1,4 +1,4 @@
-package repository.activity;
+package service.activity;
 
 import database.DBConnectionFactory;
 import model.Activity;
@@ -9,10 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import repository.account.AccountRepository;
-import repository.account.AccountRepositoryMySQL;
-import repository.client.ClientRepository;
-import repository.client.ClientRepositoryMySQL;
+import repository.activity.ActivityRepository;
+import repository.activity.ActivityRepositoryMySQL;
 import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
@@ -20,20 +18,19 @@ import repository.user.UserRepositoryMySQL;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Roles.EMPLOYEE;
-import static database.Constants.Tables.USER;
 import static org.junit.Assert.*;
 
-public class ActivityRepositoryMySQLTest {
+public class ActivityServiceMySQLTest {
 
     private static ActivityRepository activityRepository;
     private static Long userId;
     private static List<Role> roles;
     private static UserRepository userRepository;
+    private static ActivityService activityService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -43,6 +40,7 @@ public class ActivityRepositoryMySQLTest {
         RightsRolesRepository rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         roles.add(rightsRolesRepository.findRoleByTitle(EMPLOYEE));
         userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
+        activityService = new ActivityServiceMySQL(activityRepository);
     }
 
     @Before
@@ -63,7 +61,7 @@ public class ActivityRepositoryMySQLTest {
     }
 
     @Test
-    public void getActivitiesForPeriod() {
+    public void getActivityforPeriod() {
         Date date1 = new Date(2018, 10, 1);
         Date date2 = new Date(2018, 10, 15);
         Date date3 = new Date(2018, 10, 21);
@@ -85,19 +83,13 @@ public class ActivityRepositoryMySQLTest {
         activityRepository.save(activity4);
         activityRepository.save(activity5);
         Date endDate = new Date(2018, 10, 30);
-        assertEquals(3, activityRepository.getActivitiesForPeriod(userId, date1, endDate).size());
-
+        assertEquals(3, activityService.getActivityforPeriod(userId, date1, endDate).size());
     }
 
     @Test
     public void save() {
         Activity activity = new Activity("operation", new Date(2018, 10, 1));
         activity.setUserId(userId);
-        assertTrue(activityRepository.save(activity));
-    }
-
-    @Test
-    public void removeAll() {
-        activityRepository.removeAll();
+        assertTrue(activityService.save(activity));
     }
 }

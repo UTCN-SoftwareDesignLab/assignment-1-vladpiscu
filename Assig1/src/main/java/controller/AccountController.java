@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import model.Account;
+import model.Activity;
 import model.validation.Notification;
 import service.account.AccountService;
 
@@ -37,10 +38,12 @@ public class AccountController {
     private Long clientId;
     private FXMLLoader userLoader;
     private AccountService accountService;
+    private Activity activity;
 
-    public AccountController(FXMLLoader userLoader, AccountService accountService) {
+    public AccountController(FXMLLoader userLoader, AccountService accountService, Activity activity) {
         this.userLoader = userLoader;
         this.accountService = accountService;
+        this.activity = activity;
     }
 
     public void setClientId(Long clientId){
@@ -92,61 +95,36 @@ public class AccountController {
             Notification<Boolean> saveNotification = accountService
                     .addAccountForClient(clientId, typeComboBox.getValue(), amount, date);
             if (saveNotification.hasErrors()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Saving account unsuccessful");
-                alert.setContentText(saveNotification.getFormattedErrors());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Saving account unsuccessful", saveNotification.getFormattedErrors());
             } else {
                 if (!saveNotification.getResult()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Saving account unsuccessful");
-                    alert.setContentText("Account was not added successful, please try again later.");
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.WARNING, "Saving account unsuccessful", "Account was not added successful, please try again later.");
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText("Account added successfully");
+                    showAlert(Alert.AlertType.INFORMATION, "Account added successfully", "");
+                    activity.setOperationAndTimeStamp("Account added for the client with id " + clientId , Date.valueOf(date));
                     refreshView();
-                    alert.showAndWait();
                 }
             }
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Operation unsuccessful");
-            alert.setContentText("Please select a type for the account");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Operation unsuccessful", "Please select a type for the account");
         }
     }
 
     @FXML
     private void deleteAccountHandler(ActionEvent e) {
         if (accountComboBox.getValue() == null){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Delete unsuccessful");
-            alert.setContentText("Please select an account.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Delete unsuccessful", "Please select an account.");
         }
         else {
             boolean isSuccessful = accountService.removeAccount(accountComboBox.getValue().getId());
             if(isSuccessful){
+                showAlert(Alert.AlertType.INFORMATION, "Account deleted successfully", "");
+                activity.setOperationAndTimeStamp("Account with id " + accountComboBox.getValue().getId() + " of the client with id " + clientId + " deleted", Date.valueOf(LocalDate.now()));
                 refreshView();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setHeaderText("Account deleted successfully");
-                refreshView();
-                alert.showAndWait();
             }
             else{
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Delete unsuccessful");
-                alert.setContentText("Account was not deleted successful, please try again later.");
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Delete unsuccessful", "Account was not deleted successful, please try again later.");
             }
         }
     }
@@ -157,34 +135,36 @@ public class AccountController {
             Notification<Boolean> saveNotification = accountService
                     .updateAccount(accountComboBox.getValue().getId(), typeComboBox.getValue(), Integer.parseInt(amountText.getText()), creationDatePicker.getValue());
             if (saveNotification.hasErrors()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Updating account unsuccessful");
-                alert.setContentText(saveNotification.getFormattedErrors());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Updating account unsuccessful", saveNotification.getFormattedErrors());
             } else {
                 if (!saveNotification.getResult()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Updating account unsuccessful");
-                    alert.setContentText("Account was not updated successful, please try again later.");
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.WARNING, "Updating account unsuccessful", "Account was not updated successful, please try again later.");
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText("Account updated successfully");
+                    showAlert(Alert.AlertType.INFORMATION, "Account updated successfully", "");
+                    activity.setOperationAndTimeStamp("Account with id " + accountComboBox.getValue().getId() + " of the client with id " + clientId + " updated", Date.valueOf(LocalDate.now()));
                     refreshView();
-                    alert.showAndWait();
                 }
             }
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Operation unsuccessful");
-            alert.setContentText("Please select an account");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Operation unsuccessful", "Please select an account");
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String headerText, String contentText){
+        Alert alert;
+        if(alertType == Alert.AlertType.WARNING){
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+
+        }
+        else{
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+        }
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
     @FXML

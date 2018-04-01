@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ActivityRepository {
     List<Activity> getActivitiesForPeriod(Long userId, Date beginningOfPeriod, Date endingOfPeriod);
-    boolean save(Long userId, Activity activity);
+    boolean save(Activity activity);
     void removeAll();
 }

@@ -9,10 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import model.Account;
+import model.Activity;
 import model.Client;
 import model.validation.Notification;
 import service.account.AccountService;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,10 +36,12 @@ public class TransferController {
     private Long clientId;
     private FXMLLoader userLoader;
     private AccountService accountService;
+    private Activity activity;
 
-    public TransferController(FXMLLoader userLoader, AccountService accountService) {
+    public TransferController(FXMLLoader userLoader, AccountService accountService, Activity activity) {
         this.userLoader = userLoader;
         this.accountService = accountService;
+        this.activity = activity;
     }
 
     public void setClientId(Long clientId){
@@ -82,11 +86,7 @@ public class TransferController {
     private void transferMoneyHandler(ActionEvent e){
         if(sendingAccount.getValue() != null && receivingAccount.getValue() != null) {
             if(sendingAccount.getValue().equals(receivingAccount.getValue())){
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Transferring money unsuccessful");
-                alert.setContentText("Can't transfer money on the same account!");
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Transferring money unsuccessful", "Can't transfer money on the same account!");
             }
             else{
                 int amount;
@@ -97,35 +97,37 @@ public class TransferController {
                 Notification<Boolean> transferNotification = accountService
                         .transferMoneyBetweenAccounts(sendingAccount.getValue(), receivingAccount.getValue(), amount);
                 if (transferNotification.hasErrors()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Transferring money unsuccessful");
-                    alert.setContentText(transferNotification.getFormattedErrors());
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.WARNING, "Transferring money unsuccessful", transferNotification.getFormattedErrors());
                 } else {
                     if (!transferNotification.getResult()) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Warning");
-                        alert.setHeaderText("Transferring money unsuccessful");
-                        alert.setContentText("The transfer was not processed correctly, please try again later.");
-                        alert.showAndWait();
+                        showAlert(Alert.AlertType.WARNING, "Transferring money unsuccessful", "The transfer was not processed correctly, please try again later.");
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Information Dialog");
-                        alert.setHeaderText("Transfer done successfully");
-                        alert.showAndWait();
+                        showAlert(Alert.AlertType.INFORMATION, "Transferring money successfully", "");
+                        activity.setOperationAndTimeStamp("Transfer done from the account with id " + sendingAccount.getValue().getId() + " to the account with id " + receivingAccount.getValue().getId(), Date.valueOf(LocalDate.now()));
                         refreshView();
                     }
                 }
             }
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Operation unsuccessful");
-            alert.setContentText("Please select a sending account and a receiving one");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Operation unsuccessful", "Please select a sending account and a receiving one");
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String headerText, String contentText){
+        Alert alert;
+        if(alertType == Alert.AlertType.WARNING){
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+
+        }
+        else{
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+        }
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
     @FXML

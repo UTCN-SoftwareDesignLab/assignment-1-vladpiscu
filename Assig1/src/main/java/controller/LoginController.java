@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Activity;
 import model.User;
 import model.validation.Notification;
 import repository.user.AuthenticationException;
@@ -23,6 +24,7 @@ public class LoginController {
     private AuthenticationService authenticationService;
     private FXMLLoader adminLoader;
     private FXMLLoader userLoader;
+    private Activity activity;
     @FXML
     private TextField usernameTextField;
     @FXML
@@ -30,10 +32,11 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
-    public LoginController(AuthenticationService authenticationService, FXMLLoader adminLoader, FXMLLoader userLoader){
+    public LoginController(AuthenticationService authenticationService, FXMLLoader adminLoader, FXMLLoader userLoader, Activity activity){
         this.authenticationService = authenticationService;
         this.adminLoader = adminLoader;
         this.userLoader = userLoader;
+        this.activity = activity;
     }
 
     public void loginHandler(){
@@ -76,6 +79,7 @@ public class LoginController {
                 }
                 usernameTextField.clear();
                 passwordTextField.clear();
+                activity.setUserId(loginNotification.getResult().getId());
                 Scene scene = loginButton.getScene();
                 scene.setRoot(currentLoader.getRoot());
 

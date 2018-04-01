@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Activity;
 import model.Client;
 import model.Role;
 import model.User;
@@ -18,6 +19,8 @@ import sun.awt.ComponentFactory;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,13 +57,15 @@ public class UserController {
     private FXMLLoader transferLoader;
     private FXMLLoader billsLoader;
     private ClientService clientService;
+    private Activity activity;
 
-    public UserController(FXMLLoader loginLoader, FXMLLoader accountLoader, FXMLLoader transferLoader, FXMLLoader billsLoader, ClientService clientService) {
+    public UserController(FXMLLoader loginLoader, FXMLLoader accountLoader, FXMLLoader transferLoader, FXMLLoader billsLoader, ClientService clientService, Activity activity) {
         this.loginLoader = loginLoader;
         this.accountLoader = accountLoader;
         this.transferLoader = transferLoader;
         this.billsLoader = billsLoader;
         this.clientService = clientService;
+        this.activity = activity;
     }
 
     private void refreshView(){
@@ -94,24 +99,14 @@ public class UserController {
         Notification<Boolean> saveNotification = clientService
                 .save(clientNameText.getText(), cardNbText.getText(), pncText.getText(), addressText.getText());
         if (saveNotification.hasErrors()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Saving unsuccessful");
-            alert.setContentText(saveNotification.getFormattedErrors());
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Saving unsuccessful", saveNotification.getFormattedErrors());
         } else {
             if (!saveNotification.getResult()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Saving unsuccessful");
-                alert.setContentText("Client was not added successful, please try again later.");
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Saving unsuccessful", "Client was not added successful, please try again later.");
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setHeaderText("Client added successfully");
+                showAlert(Alert.AlertType.INFORMATION, "Client added successfully", "");
+                activity.setOperationAndTimeStamp("Client " + clientNameText.getText() + " added", Date.valueOf(LocalDate.now()));
                 refreshView();
-                alert.showAndWait();
             }
         }
     }
@@ -119,54 +114,30 @@ public class UserController {
     @FXML
     private void updateClientHandler(ActionEvent e){
         if(clientComboBox.getValue() == null){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Update unsuccessful");
-            alert.setContentText("Please select a client.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Update unsuccessful", "Please select a client.");
         }
         else {
             Notification<Boolean> updateNotification = clientService
                     .update(Long.parseLong(clientIdText.getText()),clientNameText.getText(), cardNbText.getText(), pncText.getText(), addressText.getText());
             if (updateNotification.hasErrors()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Updating unsuccessful");
-                alert.setContentText(updateNotification.getFormattedErrors());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Update unsuccessful", updateNotification.getFormattedErrors());
             } else {
                 if (updateNotification.getResult()) {
+                    showAlert(Alert.AlertType.INFORMATION, "Client updated successfully", "");
+                    activity.setOperationAndTimeStamp("Client with id:" + clientComboBox.getValue().getId() + " and name" + clientComboBox.getValue().getName() + " updated", Date.valueOf(LocalDate.now()));
                     refreshView();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText("Client updated successfully");
-                    refreshView();
-                    alert.showAndWait();
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Update unsuccessful");
-                    alert.setContentText("Client was not updated successful, please try again later.");
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.WARNING, "Update unsuccessful", "Client was not updated successful, please try again later.");
                 }
             }
 
         }
     }
 
-    private void showUnselectedWarning(){
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText("Warning!");
-        alert.setContentText("Please select a client for this operation");
-        alert.showAndWait();
-    }
-
     @FXML
     private void accountsHandler(ActionEvent e){
-        if(clientComboBox.getValue() == null)
-        {
-            showUnselectedWarning();
+        if(clientComboBox.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Warning!", "Please select a client for this operation");
         }
         else {
             AccountController accountController = accountLoader.getController();
@@ -180,9 +151,8 @@ public class UserController {
 
     @FXML
     private void utilityBillsHandler(ActionEvent e){
-        if(clientComboBox.getValue() == null)
-        {
-            showUnselectedWarning();
+        if(clientComboBox.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Warning!", "Please select a client for this operation");
         }
         else {
             BillsController billsController = billsLoader.getController();
@@ -195,9 +165,8 @@ public class UserController {
 
     @FXML
     private void transferMoneyHandler(ActionEvent e){
-        if(clientComboBox.getValue() == null)
-        {
-            showUnselectedWarning();
+        if(clientComboBox.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Warning!", "Please select a client for this operation");
         }
         else {
             TransferController transferController = transferLoader.getController();
@@ -209,12 +178,25 @@ public class UserController {
         }
     }
 
+    private void showAlert(Alert.AlertType alertType, String headerText, String contentText){
+        Alert alert;
+        if(alertType == Alert.AlertType.WARNING){
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+
+        }
+        else{
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+        }
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
+    }
+
     @FXML
     private void logoutHandler(ActionEvent e){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Logout successful");
-        alert.showAndWait();
+        showAlert(Alert.AlertType.INFORMATION, "Logout successful", "");
 
         Scene scene = logoutButton.getScene();
         scene.setRoot(loginLoader.getRoot());

@@ -9,9 +9,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import model.Account;
+import model.Activity;
 import model.Client;
 import model.validation.Notification;
 import service.account.AccountService;
+
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class BillsController {
     @FXML
@@ -28,10 +32,12 @@ public class BillsController {
     private Long clientId;
     private FXMLLoader userLoader;
     private AccountService accountService;
+    private Activity activity;
 
-    public BillsController(FXMLLoader userLoader, AccountService accountService) {
+    public BillsController(FXMLLoader userLoader, AccountService accountService, Activity activity) {
         this.userLoader = userLoader;
         this.accountService = accountService;
+        this.activity = activity;
     }
 
     public void setClientId(Long clientId){
@@ -61,34 +67,36 @@ public class BillsController {
                     .payBills(sendingAccount.getValue().getId(), sendingAccount.getValue().getType(), sendingAccount.getValue().getAmount(),
                             sendingAccount.getValue().getCreationDate().toLocalDate(), amount);
             if (transferNotification.hasErrors()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning");
-                alert.setHeaderText("Paying bill unsuccessful");
-                alert.setContentText(transferNotification.getFormattedErrors());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "Paying bill unsuccessful", transferNotification.getFormattedErrors());
             } else {
                 if (!transferNotification.getResult()) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Paying bill unsuccessful");
-                    alert.setContentText("The paying was not processed correctly, please try again later.");
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.WARNING, "Paying bill unsuccessful", "The paying was not processed correctly, please try again later.");
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText("Paying bill successfully");
-                    alert.showAndWait();
+                    showAlert(Alert.AlertType.INFORMATION, "Paying bill successfully", "");
+                    activity.setOperationAndTimeStamp("Bill paid from the account with id " + sendingAccount.getValue().getId() + " of the client with id " + clientId, Date.valueOf(LocalDate.now()));
                     refreshView();
                 }
             }
         }
         else{
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setHeaderText("Please select an account, type a bill code and put an amount greater than 0");
-            alert.showAndWait();
-            refreshView();
+            showAlert(Alert.AlertType.WARNING, "Please select an account, type a bill code and put an amount greater than 0", "");
         }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String headerText, String contentText){
+        Alert alert;
+        if(alertType == Alert.AlertType.WARNING){
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+
+        }
+        else{
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+        }
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 
     @FXML

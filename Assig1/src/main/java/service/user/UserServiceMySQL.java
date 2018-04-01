@@ -7,8 +7,6 @@ import model.validation.Notification;
 import model.validation.UserValidator;
 import repository.user.UserRepository;
 import service.security.PasswordEncoder;
-
-import java.util.Collections;
 import java.util.List;
 
 public class UserServiceMySQL implements UserService {
