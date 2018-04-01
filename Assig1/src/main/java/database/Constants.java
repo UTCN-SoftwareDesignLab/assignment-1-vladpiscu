@@ -27,6 +27,14 @@ public class Constants {
         public static final String[] ORDERED_TABLES_FOR_CREATION = new String[]{CLIENT, ACCOUNT, USER, ACTIVITY, ROLE, RIGHT, ROLE_RIGHT, USER_ROLE};
     }
 
+    public static class AccountTypes {
+        public static final String DEBIT = "debit";
+        public static final String SAVINGS = "savings";
+
+        public static final String[] ACCOUNT_TYPES = new String[]{DEBIT, SAVINGS};
+
+    }
+
     public static class Roles {
         public static final String ADMINISTRATOR = "administrator";
         public static final String EMPLOYEE = "employee";

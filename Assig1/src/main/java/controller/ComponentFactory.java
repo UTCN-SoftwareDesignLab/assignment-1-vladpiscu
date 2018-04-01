@@ -9,6 +9,8 @@ import repository.security.RightsRolesRepository;
 import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
+import service.account.AccountService;
+import service.account.AccountServiceMySQL;
 import service.client.ClientService;
 import service.client.ClientServiceMySQL;
 import service.security.PasswordEncoder;
@@ -29,6 +31,7 @@ public class ComponentFactory {
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
     private final ClientService clientService;
+    private final AccountService accountService;
 
     private static ComponentFactory instance;
 
@@ -50,6 +53,11 @@ public class ComponentFactory {
         this.authenticationService = new AuthenticationServiceMySQL(this.userRepository, this.rightsRolesRepository, encoder);
         this.userService = new UserServiceMySQL(userRepository, encoder);
         this.rightsRolesService = new RightRolesServiceMySQL(rightsRolesRepository);
+        this.accountService = new AccountServiceMySQL(accountRepository);
+    }
+
+    public AccountService getAccountService() {
+        return accountService;
     }
 
     public ClientService getClientService() {

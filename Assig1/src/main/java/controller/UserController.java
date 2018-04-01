@@ -50,10 +50,16 @@ public class UserController {
     private ComboBox<Client> clientComboBox;
 
     private FXMLLoader loginLoader;
+    private FXMLLoader accountLoader;
+    private FXMLLoader transferLoader;
+    private FXMLLoader billsLoader;
     private ClientService clientService;
 
-    public UserController(FXMLLoader loginLoader, ClientService clientService){
+    public UserController(FXMLLoader loginLoader, FXMLLoader accountLoader, FXMLLoader transferLoader, FXMLLoader billsLoader, ClientService clientService) {
         this.loginLoader = loginLoader;
+        this.accountLoader = accountLoader;
+        this.transferLoader = transferLoader;
+        this.billsLoader = billsLoader;
         this.clientService = clientService;
     }
 
@@ -148,19 +154,56 @@ public class UserController {
         }
     }
 
+    private void showUnselectedWarning(){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText("Warning!");
+        alert.setContentText("Please select a client for this operation");
+        alert.showAndWait();
+    }
+
     @FXML
     private void accountsHandler(ActionEvent e){
-
+        if(clientComboBox.getValue() == null)
+        {
+            showUnselectedWarning();
+        }
+        else {
+            AccountController accountController = accountLoader.getController();
+            accountController.setClientId(clientComboBox.getValue().getId());
+            accountController.populateAccountsBox();
+            accountController.populateTypeBox();
+            Scene scene = accountsButton.getScene();
+            scene.setRoot(accountLoader.getRoot());
+        }
     }
 
     @FXML
     private void utilityBillsHandler(ActionEvent e){
-
+        if(clientComboBox.getValue() == null)
+        {
+            showUnselectedWarning();
+        }
+        else {
+            BillsController billsController = billsLoader.getController();
+            billsController.setClientId(clientComboBox.getValue().getId());
+            Scene scene = utilityBillsButton.getScene();
+            scene.setRoot(billsLoader.getRoot());
+        }
     }
 
     @FXML
     private void transferMoneyHandler(ActionEvent e){
-
+        if(clientComboBox.getValue() == null)
+        {
+            showUnselectedWarning();
+        }
+        else {
+            TransferController transferController = transferLoader.getController();
+            transferController.setClientId(clientComboBox.getValue().getId());
+            Scene scene = transferMoneyButton.getScene();
+            scene.setRoot(transferLoader.getRoot());
+        }
     }
 
     @FXML
